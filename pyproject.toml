@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "apimystery-ch0"
+version = "0.0.1"
+description = "Mystery game and API trainer"
+authors = ["SnoweTiger <snowetiger@gmail.com>"]
+license = "GPLv2"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.111.1"
+uvicorn = "^0.30.1"
+sqlalchemy = "^2.0.31"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

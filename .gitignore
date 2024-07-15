@@ -1,0 +1,4 @@
+ch0/data
+*.sqlite
+__pycache__
+.venv
