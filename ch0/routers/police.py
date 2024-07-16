@@ -6,22 +6,28 @@ from models.engine import Session, get_db
 import schema
 
 # router = APIRouter(tags=["Client"], dependencies=[Depends(JWTBearer())])
-router = APIRouter(tags=["Police"])
+router = APIRouter(tags=["База полиция"])
 
 
-@router.get("/person/all", response_model=list[schema.PersonSchema])
+@router.get("/person/all", response_model=list[schema.PersonSchema],
+            tags=['Персонаж'],
+            summary='Получить всех персонажей')
 async def get_all_persons(session: Session = Depends(get_db)):
     persons = session.query(Person).limit(10).all()
     return persons
 
 
-@router.get("/person/ssn/{ssn}", response_model=schema.PersonSchema)
+@router.get("/person/ssn/{ssn}", response_model=schema.PersonSchema,
+            tags=['Персонаж'],
+            summary='Получить персонажа по его SSN')
 async def get_persons_by_ssn(ssn: int, session: Session = Depends(get_db)):
     persons = session.query(Person).filter(Person.ssn == ssn).first()
     return persons
 
 
-@router.post("/person/search", response_model=list[schema.PersonSchema])
+@router.post("/person/search", response_model=list[schema.PersonSchema],
+             tags=['Персонаж'],
+             summary='Получить персонажа по критериям в теле запроса')
 async def search_persons(params: schema.SearchPersonSchema, session: Session = Depends(get_db)):
 
     if (not params.name and not params.license_id and not params.address and not params.ssn):
@@ -45,20 +51,26 @@ async def search_persons(params: schema.SearchPersonSchema, session: Session = D
     return query.all()
 
 
-@router.get("/driver_license/all", response_model=list[schema.DriverLicenseSchema])
+@router.get("/driver_license/all", response_model=list[schema.DriverLicenseSchema],
+            tags=['Водительские удостоверения'],
+            summary='Получить все ВУ')
 async def get_all_driver_licenses(session: Session = Depends(get_db)):
     r = session.query(DriverLicense).limit(10).all()
     return r
 
 
-@router.get("/driver_license/{driver_license_id}", response_model=schema.DriverLicenseSchema)
-async def get_all_driver_licenses(driver_license_id: int, session: Session = Depends(get_db)):
+@router.get("/driver_license/{driver_license_id}", response_model=schema.DriverLicenseSchema,
+            tags=['Водительские удостоверения'],
+            summary='Получить ВУ по его номеру')
+async def get_driver_license_by_id(driver_license_id: int, session: Session = Depends(get_db)):
     r = session.query(DriverLicense).get(driver_license_id)
     return r
 
 
-@router.post("/driver_license/search", response_model=list[schema.DriverLicenseSchema])
-async def search_persons(params: schema.SearchDriverLicenseSchema, session: Session = Depends(get_db)):
+@router.post("/driver_license/search", response_model=list[schema.DriverLicenseSchema],
+             tags=['Водительские удостоверения'],
+             summary='Найти все ВУ по критериям в теле запроса')
+async def search_driver_license(params: schema.SearchDriverLicenseSchema, session: Session = Depends(get_db)):
 
     if (
         not params.age and not params.height and
