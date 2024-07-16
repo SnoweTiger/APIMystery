@@ -5,7 +5,7 @@ from models.engine import Base
 
 
 class DriverLicense(Base):
-    __tablename__ = "driver_license"
+    __tablename__ = "drivers_license"
 
     id = Column(Integer, primary_key=True, index=True)
     age = Column(Integer, nullable=False)
@@ -25,7 +25,7 @@ class Person(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    license_id = Column(Integer, ForeignKey("driver_license.id"))
+    license_id = Column(Integer, ForeignKey("drivers_license.id"))
     address_number = Column(Integer, nullable=False)
     address_street_name = Column(String, nullable=False)
     ssn = Column(Integer, unique=True, nullable=False)

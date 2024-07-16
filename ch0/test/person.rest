@@ -1,0 +1,61 @@
+@hostname = localhost
+@port = 5000
+@host = http://{{hostname}}:{{port}}/police/api
+
+
+### Get all persons
+GET {{host}}/person/all HTTP/1.1
+Content-Type: application/json
+
+
+### Search by name 
+POST {{host}}/person/search HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Peteuil"
+}
+
+### Search by license_id 
+POST {{host}}/person/search HTTP/1.1
+Content-Type: application/json
+
+{
+    "license_id": "993845"
+}
+
+### Search by adress and license 
+POST {{host}}/person/search HTTP/1.1
+Content-Type: application/json
+
+{
+    "license_id": 729987,
+    "address": "Circle"
+}
+
+
+### Get all driver licenses
+GET {{host}}/driver_license/all HTTP/1.1
+Content-Type: application/json
+
+### Get driver licenses by id
+@id = 100280
+GET {{host}}/driver_license/{{id}} HTTP/1.1
+Content-Type: application/json
+
+### Search by age 
+POST {{host}}/driver_license/search HTTP/1.1
+Content-Type: application/json
+
+{
+    "age": 72
+}
+
+### Search by adress and license 
+POST {{host}}/driver_license/search HTTP/1.1
+Content-Type: application/json
+
+{
+    "eye_color": "brown",
+    "hair_color": "red"
+}
