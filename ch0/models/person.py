@@ -15,18 +15,9 @@ class DriverLicense(Base):
     hair_color = Column(String, nullable=False)
     gender = Column(String, nullable=False)
 
-    # person = relationship("Person", viewonly=True)
-
-
-class Car(Base):
-    __tablename__ = "car"
-
-    id = Column(Integer, primary_key=True, index=True)
-    registration_plate = Column(String, nullable=False)
-    manufacturer = Column(String, nullable=False)
-    model = Column(String, nullable=False)
-
-    driver_license_id = Column(Integer, ForeignKey("driver_license.id"))
+    plate_number = Column(String, nullable=False)
+    car_make = Column(String, nullable=False)
+    car_model = Column(String, nullable=False)
 
 
 class Person(Base):
@@ -34,17 +25,14 @@ class Person(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    passport = Column(Integer, unique=True, nullable=False)
+    license_id = Column(Integer, ForeignKey("driver_license.id"))
     address_number = Column(Integer, nullable=False)
-    address_street = Column(String, nullable=False)
-
-    driver_license_id = Column(Integer, ForeignKey("driver_license.id"))
+    address_street_name = Column(String, nullable=False)
+    ssn = Column(Integer, unique=True, nullable=False)
 
 
 class Income(Base):
     __tablename__ = "income"
 
-    id = Column(Integer, primary_key=True, index=True)
-    passport = Column(Integer, ForeignKey(
-        "person.passport"), nullable=False)
-    annual_income = Column(Float, nullable=False)
+    ssn = Column(Integer, ForeignKey("person.ssn"), primary_key=True)
+    annual_income = Column(Integer, nullable=False)

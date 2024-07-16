@@ -1,1 +1,1 @@
-from .person import Person, DriverLicense, Car, Income
+from .person import Person, DriverLicense, Income
