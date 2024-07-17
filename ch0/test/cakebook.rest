@@ -1,0 +1,38 @@
+@hostname = localhost
+@port = 5000
+@host = http://{{hostname}}:{{port}}/cakebook/api
+@token = d901050d-07ec-4990-a05c-ab2178e2e09c
+
+### Get event
+@id = 18
+GET {{host}}/event/{{id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get person events
+@person_id = 36560
+GET {{host}}/events/{{person_id}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+### Get person events by dates 
+POST {{host}}/events HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "person_id": 10000,
+    "start_date": 20240601,
+    "end_date": 20240630
+}
+
+### Get person events by name 
+POST {{host}}/events HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "person_id": 10000,
+    "event_name": "1"
+}

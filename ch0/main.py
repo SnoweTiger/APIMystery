@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
+from models.engine import Base, engine
+from models import CakebookEventCheckIn
+from models.engine import Session, get_db
+from sqlalchemy import insert
+
 import routers
 
 app = FastAPI()
@@ -27,6 +32,7 @@ async def ping():
     return {"message": "pong"}
 
 app.include_router(routers.police, prefix="/police/api")
+app.include_router(routers.cakebook, prefix="/cakebook/api")
 
 
 def start():
@@ -35,4 +41,5 @@ def start():
 
 # Run the API with uvicorn
 if __name__ == "__main__":
+
     start()
