@@ -3,8 +3,51 @@
 @host = http://{{hostname}}:{{port}}/getfitnow/api
 @token = d901050d-07ec-4990-a05c-ab2178e2e09c
 
-### Get event
-@membership_id = 4KB72
+### Get membership by id
+@membership_id = 5Y28Y
 GET {{host}}/membership/{{membership_id}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+
+### Get membership by person id
+POST {{host}}/membership HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{"person_id": 24541}
+
+
+### Get membership by person name
+POST {{host}}/membership HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{"person_name": "Marcelino Leard"}
+
+### Get checkIn by id
+@checkIn = 10
+GET {{host}}/checkin/{{checkIn}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Find checkIn by date
+@date = 20171021
+POST {{host}}/checkin HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "check_in_date": {{date}}
+}
+
+### Find checkIn by date and time
+@from_time = 1135
+POST {{host}}/checkin HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "check_in_date": {{date}},
+    "from_time": {{from_time}}
+}

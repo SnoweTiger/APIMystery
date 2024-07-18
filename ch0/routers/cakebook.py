@@ -1,21 +1,21 @@
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 
-
-from models import CakebookEventCheckIn
 from models.engine import Session, get_db
+from models.social_media import CakebookEventCheckIn
 from schema.cakebook import EventSchema, EventFilterSchema
+
 
 API_TOKEN = 'd901050d-07ec-4990-a05c-ab2178e2e09c'
 
 
-class CakebookToken(HTTPBearer):
+class Token(HTTPBearer):
     async def __call__(self, request: Request):
         credentials: HTTPAuthorizationCredentials = await super(CakebookToken, self).__call__(request)
         if credentials:
-            # if not credentials.scheme == "Bearer":
-            #     raise HTTPException(
-            #         status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication scheme.")
+            if not credentials.scheme == "Bearer":
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication scheme.")
             if not self.verify_token(credentials.credentials):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN, detail="Invalid token or expired token.")
@@ -32,15 +32,16 @@ class CakebookToken(HTTPBearer):
 
 
 router = APIRouter(tags=["Социальная сеть Cakebook"],
-                   dependencies=[Depends(CakebookToken())]
-                   )
+                   dependencies=[Depends(Token())])
 
 
 @router.get("/event/{event_id}",
             response_model=EventSchema,
             summary='Получить событие по его id')
 async def get_event_by_id(event_id: int, session: Session = Depends(get_db)):
+
     event = session.query(CakebookEventCheckIn).get(event_id)
+
     if not event:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
@@ -51,6 +52,7 @@ async def get_event_by_id(event_id: int, session: Session = Depends(get_db)):
             response_model=list[EventSchema],
             summary='Получить 10 последних событий пользователя')
 async def get_last_user_events(person_id: int, session: Session = Depends(get_db)):
+
     events = session.query(CakebookEventCheckIn).filter(
         CakebookEventCheckIn.person_id == person_id).all()
 

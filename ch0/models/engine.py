@@ -3,8 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-# DB_FILE = 'api_mystery.sqlite'
-DB_FILE = 'sql-murder-mystery.db'
+DB_FILE = 'sql-mystery.db'
 
 engine = create_engine(f"sqlite:///{DB_FILE}")
 

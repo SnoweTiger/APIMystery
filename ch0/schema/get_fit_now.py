@@ -12,7 +12,13 @@ class MembershipSchema(BaseModel):
 
 class SearchMembershipSchema(BaseModel):
     person_id: Optional[int] = None
-    name: Optional[str] = None
+    person_name: Optional[str] = None
+
+
+class SearchCheckInSchema(BaseModel):
+    check_in_date: int
+    from_time: Optional[int] = None
+    to_time: Optional[int] = None
 
 
 class CheckInSchema(BaseModel):
