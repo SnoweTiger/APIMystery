@@ -2,6 +2,8 @@ ch0/data
 
 __pycache__
 .venv
+test
 
 *.sqlite
 *.db
+commands.txt

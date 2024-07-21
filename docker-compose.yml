@@ -1,0 +1,12 @@
+version: "3"
+services:
+  chapter0:
+    container_name: api-mystery-ch-0
+    image: api-mystery-ch-0:0.1.0
+    ports:
+    - 8080:80
+    networks:
+    - backend
+networks:
+  backend:
+    driver: bridge
