@@ -11,7 +11,7 @@ API_TOKEN = 'd901050d-07ec-4990-a05c-ab2178e2e09c'
 
 class Token(HTTPBearer):
     async def __call__(self, request: Request):
-        credentials: HTTPAuthorizationCredentials = await super(CakebookToken, self).__call__(request)
+        credentials: HTTPAuthorizationCredentials = await super(Token, self).__call__(request)
         if credentials:
             if not credentials.scheme == "Bearer":
                 raise HTTPException(
@@ -39,27 +39,36 @@ router = APIRouter(tags=["Социальная сеть Cakebook"],
             response_model=EventSchema,
             summary='Получить событие по его id')
 async def get_event_by_id(event_id: int, session: Session = Depends(get_db)):
+    try:
+        event = session.query(CakebookEventCheckIn).filter(
+            CakebookEventCheckIn.event_id == event_id).first()
 
-    event = session.query(CakebookEventCheckIn).get(event_id)
+        if not event:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
+        return event
 
-    if not event:
+    except:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
-    return event
+            status_code=status.HTTP_400_BAD_REQUEST, detail="event id must be int")
 
 
 @router.get("/events/{person_id}",
             response_model=list[EventSchema],
             summary='Получить 10 последних событий пользователя')
 async def get_last_user_events(person_id: int, session: Session = Depends(get_db)):
+    try:
+        events = session.query(CakebookEventCheckIn).filter(
+            CakebookEventCheckIn.person_id == person_id).all()
 
-    events = session.query(CakebookEventCheckIn).filter(
-        CakebookEventCheckIn.person_id == person_id).all()
+        if not events or len(events) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Events not found")
+        return events
 
-    if not events or len(events) == 0:
+    except:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Events not found")
-    return events
+            status_code=status.HTTP_400_BAD_REQUEST, detail="person_id must be int")
 
 
 @router.post("/events",

@@ -22,9 +22,16 @@ class Interview(Base):
         "person.passport"), nullable=False)
 
 
-class Judge(Base):
-    __tablename__ = "judge"
+# class Judge(Base):
+#     __tablename__ = "judge"
+
+#     id = Column(Integer, primary_key=True, index=True)
+#     user = Column(Integer, nullable=False)
+#     value = Column(String, nullable=False)
+
+class Users(Base):
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    user = Column(Integer, nullable=False)
-    value = Column(String, nullable=False)
+    login = Column(String, nullable=False)
+    password = Column(String, nullable=False)

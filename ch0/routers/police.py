@@ -3,9 +3,10 @@ from fastapi import APIRouter, status, HTTPException, Depends
 from models.engine import Session, get_db
 from models.person import Person, DriverLicense
 from schema.person import PersonSchema, SearchPersonSchema, DriverLicenseSchema, SearchDriverLicenseSchema
+from auth.auth_bearer import JWTBearer
 
-# router = APIRouter(tags=["Client"], dependencies=[Depends(JWTBearer())])
-router = APIRouter(tags=["База полиция"])
+
+router = APIRouter(tags=["База полиция"], dependencies=[Depends(JWTBearer())])
 
 
 @router.get("/person/all", response_model=list[PersonSchema],

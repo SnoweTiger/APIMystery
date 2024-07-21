@@ -4,13 +4,13 @@
 @token = d901050d-07ec-4990-a05c-ab2178e2e09c
 
 ### Get event
-@id = 18
+@id = 9975
 GET {{host}}/event/{{id}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Get person events
-@person_id = 36560
+@person_id = 12345
 GET {{host}}/events/{{person_id}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -22,9 +22,9 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "person_id": 10000,
-    "start_date": 20240601,
-    "end_date": 20240630
+    "person_id": 12345,
+    "start_date": 20251030,
+    "end_date": 20251030
 }
 
 ### Get person events by name 
@@ -33,6 +33,6 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "person_id": 10000,
-    "event_name": "1"
+    "person_id": 12345,
+    "event_name": "SUPPORT"
 }

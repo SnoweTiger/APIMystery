@@ -27,6 +27,7 @@ async def ping():
     return {"message": "pong"}
 
 app.include_router(routers.police, prefix="/police/api")
+app.include_router(routers.auth, prefix="/police/auth")
 app.include_router(routers.cakebook, prefix="/cakebook/api")
 app.include_router(routers.get_fit_now, prefix="/getfitnow/api")
 
