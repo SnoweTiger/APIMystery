@@ -15,6 +15,7 @@ class CrimeSceneReport(Base):
 class Interview(Base):
     __tablename__ = "interview"
 
+    id = Column(Integer, primary_key=True, index=True)
     transcript = Column(String, nullable=False)
 
     person_id = Column(Integer, ForeignKey(

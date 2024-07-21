@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 
 from models.engine import Session, get_db
-from models.police import Person, DriverLicense
+from models.person import Person, DriverLicense
 from schema.person import PersonSchema, SearchPersonSchema, DriverLicenseSchema, SearchDriverLicenseSchema
 
 # router = APIRouter(tags=["Client"], dependencies=[Depends(JWTBearer())])
