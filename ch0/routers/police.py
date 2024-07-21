@@ -3,10 +3,75 @@ from fastapi import APIRouter, status, HTTPException, Depends
 from models.engine import Session, get_db
 from models.person import Person, DriverLicense
 from schema.person import PersonSchema, SearchPersonSchema, DriverLicenseSchema, SearchDriverLicenseSchema
+from schema.police import ReportSchema, ReportFiltersSchema, InterviewSchema
+from models.police import CrimeSceneReport, Interview
 from auth.auth_bearer import JWTBearer
 
 
 router = APIRouter(tags=["База полиция"], dependencies=[Depends(JWTBearer())])
+
+
+@router.get("/report/{date}", response_model=list[ReportSchema],
+            summary='Поиск отчеты с места преступления по дате')
+async def get_report_by_date(date: int, session: Session = Depends(get_db)):
+
+    reports = session.query(CrimeSceneReport).filter(
+        CrimeSceneReport.date == date).all()
+
+    if not reports or len(reports) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Reports not found")
+    return reports
+
+
+@router.post("/report", response_model=list[ReportSchema],
+             summary='Поиск отчеты с места преступления по фильтрам')
+async def get_report(filters: ReportFiltersSchema, session: Session = Depends(get_db)):
+
+    if (not filters.date_from and not filters.date_to and not filters.city and not filters.type):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="at least one filter must be set")
+
+    reports = session.query(CrimeSceneReport)
+
+    if filters.date_from:
+        reports = reports.filter(CrimeSceneReport.date >= filters.date_from)
+    if filters.date_to:
+        reports = reports.filter(CrimeSceneReport.date <= filters.date_to)
+    if filters.type:
+        reports = reports.filter(CrimeSceneReport.type.contains(filters.type))
+    if filters.city:
+        reports = reports.filter(CrimeSceneReport.city.contains(filters.city))
+
+    reports = reports.all()
+
+    if not reports or len(reports) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Person not found")
+    return reports
+
+
+@router.get("/interview/id/{id}", response_model=InterviewSchema, summary='Получить интервью по его id')
+async def get_interview_by_id(id: int, session: Session = Depends(get_db)):
+
+    interview = session.query(Interview).get(id)
+
+    if not interview:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Interview not found")
+    return interview
+
+
+@router.get("/interview/person/{person_id}", response_model=list[InterviewSchema], summary='Получить все интервью персонажа')
+async def get_interview_by_id(person_id: int, session: Session = Depends(get_db)):
+
+    interview = session.query(Interview).filter(
+        Interview.person_id == person_id).all()
+
+    if not interview or len(interview) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Interview not found")
+    return interview
 
 
 @router.get("/person/all", response_model=list[PersonSchema],
