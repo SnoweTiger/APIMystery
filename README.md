@@ -73,3 +73,9 @@ Authorization: Bearer {{token}}
 2. Сюжетный режим
 3. Загадки решаемые при помощи RPC и GraphQL
 4. Загадки решаемые при помощи Web UI
+
+# Copyright
+
+Данный проект распространяется под лицензией [MIT](/LICENSE) @SnoweTiger 2024.
+За основу данных проекта взята SQL база из [The Sql Murder Mystery](https://mystery.knightlab.com/)
+под [Creative Commons CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
