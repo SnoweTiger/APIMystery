@@ -6,7 +6,8 @@ from models.engine import Base
 class CrimeSceneReport(Base):
     __tablename__ = "crime_scene_report"
 
-    date = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Integer)
     type = Column(String, nullable=False)
     description = Column(String, nullable=False)
     city = Column(String, nullable=False)

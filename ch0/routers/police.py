@@ -3,10 +3,12 @@ from fastapi import APIRouter, status, HTTPException, Depends
 from models.engine import Session, get_db
 from models.person import Person, DriverLicense
 from schema.person import PersonSchema, SearchPersonSchema, DriverLicenseSchema, SearchDriverLicenseSchema, CarSchema, SearchCarSchema
-from schema.police import ReportSchema, ReportFiltersSchema, InterviewSchema
+from schema.police import ReportSchema, ReportFiltersSchema, InterviewSchema, ChargeSuspectSchema
 from models.police import CrimeSceneReport, Interview
 from auth.auth_bearer import JWTBearer
 
+
+TARGET_PERSON_ID = 64562
 
 router = APIRouter(tags=["База полиция"], dependencies=[Depends(JWTBearer())])
 
@@ -24,9 +26,9 @@ async def get_report_by_date(date: int, session: Session = Depends(get_db)):
     return reports
 
 
-@router.post("/report", response_model=list[ReportSchema],
+@router.post("/report/search", response_model=list[ReportSchema],
              summary='Поиск отчеты с места преступления по фильтрам')
-async def get_report(filters: ReportFiltersSchema, session: Session = Depends(get_db)):
+async def search_report(filters: ReportFiltersSchema, session: Session = Depends(get_db)):
 
     if (not filters.date_from and not filters.date_to and not filters.city and not filters.type):
         raise HTTPException(
@@ -49,6 +51,28 @@ async def get_report(filters: ReportFiltersSchema, session: Session = Depends(ge
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Person not found")
     return reports
+
+
+@router.patch("/report", summary='Выдвинуть обвинение подозреваемому')
+async def charge_suspect(result: ChargeSuspectSchema, session: Session = Depends(get_db)) -> dict:
+
+    suspect = session.query(Person).get(result.suspect_id)
+    if not suspect or suspect.name != result.suspect_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Не верно. Попробуйте еще раз.")
+
+    report = session.query(CrimeSceneReport).get(result.report_id)
+    if not report or report.type != 'theft' or report.date != 20251029:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Не верно. Попробуйте еще раз.")
+
+    criminal = session.query(Person).get(TARGET_PERSON_ID)
+
+    if suspect != criminal:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Не верно. Попробуйте еще раз.")
+
+    return {"detail": "Поздравляю! Вы поймали преступника."}
 
 
 @router.get("/interview/id/{id}", response_model=InterviewSchema, summary='Получить интервью по его id')
