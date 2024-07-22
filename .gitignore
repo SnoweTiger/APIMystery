@@ -8,3 +8,4 @@ test
 *.db
 commands.txt
 .env
+*.docx

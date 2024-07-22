@@ -27,7 +27,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name": "Peteuil"
+    "name": "Ivan Petrov"
 }
 
 ### Search by license_id 
@@ -36,19 +36,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "license_id": "993845"
+    "driver_license": "961137"
 }
-
-### Search by adress and license 
-POST {{host}}/person/search HTTP/1.1
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-    "license_id": 729987,
-    "address": "Circle"
-}
-
 
 ### Get all driver licenses
 GET {{host}}/driver_license/all HTTP/1.1
@@ -56,7 +45,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Get driver licenses by id
-@id = 100280
+@id = 961137
 GET {{host}}/driver_license/{{id}} HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -70,12 +59,20 @@ Authorization: Bearer {{token}}
     "age": 72
 }
 
-### Search by adress and license 
-POST {{host}}/driver_license/search HTTP/1.1
+### Get car by filters
+@person_id = 99991
+POST {{host}}/car/search HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "eye_color": "brown",
-    "hair_color": "red"
+    "plate_number": "9KA",
+    "car_make": "Volkswagen",
+    "car_model": "Rabbit"
 }
+
+### Get car by filters
+@plate = 9ka
+GET {{host}}/car/{{plate}} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}

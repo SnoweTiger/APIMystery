@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException, Depends
 
 from models.engine import Session, get_db
 from models.person import Person, DriverLicense
-from schema.person import PersonSchema, SearchPersonSchema, DriverLicenseSchema, SearchDriverLicenseSchema
+from schema.person import PersonSchema, SearchPersonSchema, DriverLicenseSchema, SearchDriverLicenseSchema, CarSchema, SearchCarSchema
 from schema.police import ReportSchema, ReportFiltersSchema, InterviewSchema
 from models.police import CrimeSceneReport, Interview
 from auth.auth_bearer import JWTBearer
@@ -105,8 +105,9 @@ async def get_persons_by_ssn(ssn: int, session: Session = Depends(get_db)):
              summary='Получить персонажа по критериям в теле запроса')
 async def search_persons(params: SearchPersonSchema, session: Session = Depends(get_db)):
 
-    if (not params.name and not params.license_id and not params.address and not params.ssn):
-        return []
+    if (not params.name and not params.driver_license and not params.address and not params.ssn):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="at least one filter must be set")
 
     query = session.query(Person)
     if params.name:
@@ -117,16 +118,17 @@ async def search_persons(params: SearchPersonSchema, session: Session = Depends(
             (Person.address_street_name.contains(params.address))
         )
 
-    if params.license_id:
-        query = query.filter(Person.license_id == params.license_id)
+    if params.driver_license:
+        query = query.filter(Person.license_id == params.driver_license)
 
     if params.ssn:
         query = query.filter(Person.ssn == params.ssn)
 
+    query = query.all()
     if not query or len(query) == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Person not found")
-    return query.all()
+    return query
 
 
 @router.get("/driver_license/all", response_model=list[DriverLicenseSchema],
@@ -157,7 +159,7 @@ async def get_driver_license_by_id(driver_license_id: int, session: Session = De
 
 @router.post("/driver_license/search", response_model=list[DriverLicenseSchema],
              tags=['Водительские удостоверения'],
-             summary='Найти все ВУ по критериям в теле запроса')
+             summary='Найти все ВУ по критериям')
 async def search_driver_license(params: SearchDriverLicenseSchema, session: Session = Depends(get_db)):
 
     if (
@@ -168,6 +170,7 @@ async def search_driver_license(params: SearchDriverLicenseSchema, session: Sess
         return []
 
     query = session.query(DriverLicense)
+
     if params.age:
         query = query.filter(DriverLicense.age == params.age)
 
@@ -186,4 +189,68 @@ async def search_driver_license(params: SearchDriverLicenseSchema, session: Sess
     if not query or len(query) == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Driver license not found")
+
     return query.all()
+
+
+@router.post("/car/search", response_model=list[CarSchema],
+             tags=['Авто'],
+             summary='Поиск автомобиля по критериям')
+async def search_car_by_filters(filters: SearchCarSchema, session: Session = Depends(get_db)):
+
+    if (not filters.car_make and not filters.car_model and not filters.plate_number):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="at least one filter must be set")
+
+    cars = session.query(
+        DriverLicense.id.label('driver_license'),
+        DriverLicense.car_model,
+        DriverLicense.car_make,
+        DriverLicense.plate_number,
+    )
+
+    if filters.plate_number:
+        cars = cars.filter(
+            DriverLicense.plate_number.contains(filters.plate_number))
+
+    if filters.car_make:
+        cars = cars.filter(
+            DriverLicense.car_make.contains(filters.car_make))
+
+    if filters.car_model:
+        cars = cars.filter(
+            DriverLicense.car_model.contains(filters.car_model))
+
+    cars = cars.all()
+
+    if not cars or len(cars) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Driver license not found")
+    return cars
+
+
+@router.get("/car/{plate_number}", response_model=list[CarSchema],
+            tags=['Авто'],
+            summary='Поиск автомобиля по номеру или его части')
+async def search_car_by_plate(plate_number: str, session: Session = Depends(get_db)):
+
+    if (not plate_number):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="plate number left")
+
+    cars = session.query(
+        DriverLicense.id.label('driver_license'),
+        DriverLicense.car_model,
+        DriverLicense.car_make,
+        DriverLicense.plate_number,
+    )
+
+    cars = cars.filter(
+        DriverLicense.plate_number.contains(plate_number.upper()))
+
+    cars = cars.all()
+
+    if not cars or len(cars) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Cars not found")
+    return cars
