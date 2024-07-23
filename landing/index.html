@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>The API Mystery</title>
+</head>
+
+<body>
+
+    <ul class="nav nav-pills justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link active" href="https://github.com/SnoweTiger/APIMystery">GitHub SnoweTiger/APIMystery</a>
+        </li>
+    </ul>
+
+    <h1 class="text-center display-1 fw-bold">The API Mystery</h1>
+
+    <div class="py-5 my-5 text-center">
+        <h2 class="display-5 fw-bold">Предисловие от автора</h2>
+                
+        <div class="col-lg-8 mx-auto text-start">
+            <p class="lead mb-2">Всем привет! С самого первого момента, как я увидел <a href="https://mystery.knightlab.com/">The SQL Murder Mystery</a>, я не мог
+            поверить, что не было продолжения или похожей игры с <b>Web API</b>-решением. Когда у меня появилось время, я решил создать
+            такую игру и <b>The API Mystery</b> родилась!</p>
+            <p class="lead mb-2">Игра состоит из нескольких независимых частей. В каждой из них вам предстоит разгадать детективную загадку и найти
+            преступника. Вы играете за стажера-криминалиста по имени Апи. Единственные доступные вам инструменты - это API
+            нескольких сервисов и, конечно же, ваша смекалка и дедукция!
+            </p>
+        </div>
+
+    </div>
+
+    <div class="mt-4 text-center">
+        <h2 class="display-6 fw-bold">Установка и начало работы</h2>
+        <div class="col-lg-8 mx-auto text-start">
+            <p class="lead">
+                Самый простой способ использовать предварительно подготовленный контейнер. Для этого у вас на компьютере должен быть
+                установлен <b>Docker Desktop</b> или <b>docker-engine</b> и они должны быть прописаны в <b>path</b>. <a href="https://docs.docker.com/desktop/install/windows-install/">Docker install</a>
+            </p>
+
+            <p class="lead">
+                Создайте папку. Перейдите в нее. Скачайте <b>docker-compose.yml</b> из GitHub и запустите контейнер
+            </p>
+
+            <pre class="mx-0 text-start">
+                <code> 
+                    mkdir APIMystery
+                    cd APIMystery
+                    wget https://github.com/SnoweTiger/APIMystery/blob/master/docker-compose.yml -O docker-compose.yml
+                    docker-compose up -d
+                </code> 
+            </pre>
+
+
+            <p class="lead">
+                Сервер будет доступен по адресу **http://localhost:8080**. Проверьте доступность сервера вызвав в браузере
+                **http://localhost:8080/ping** или выполнив в консоли
+            </p>
+
+            <pre class="mx-0 text-start">
+                <code> 
+                    curl http://localhost:8080/ping
+                </code> 
+            </pre>
+
+            <p class="lead">Сервер должен ответит статус 200 {"message":"pong"}</p>
+            
+            <pre class="mx-0 text-start">
+                <code> 
+                    StatusCode : 200
+                    StatusDescription : OK
+                    Content : {"message":"pong"}
+                </code>
+            </pre>
+
+            <p class="lead">Откройте документацию <a href="http://localhost:8080/docs">http://localhost:8080/docs</a></p>
+
+            <p class="lead">Остановить и удалить контейнер можно следующей командой</p>
+
+            <pre class="mx-0 text-start">
+                <code> 
+                    docker-compose down
+                </code>
+            </pre>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <h2 class="display-6 fw-bold">Часть 0: Погружение в чистый API</h2>
+        <div class="col-lg-8 mx-auto text-start">
+            <p class="lead">В городе <b>N City ночью 29 октября 2025</b> года из накануне открытия музея кафедры Информационных технологий была разбита
+            витрина и похищен талисман <b>Золотой Гоффер</b>. Полиция пытается найти преступника и похищенный талисман.</p>
+            <p class="lead">
+                Вам как стажеру-криминалисту поручают расследование этого дела.
+                Требуется найти похитетеля и у кого находится Гоффер. Ваши доступы к служебному API выслан вам 30 октября 2025 личным
+                сообщением в соцсети <b>Cakebook</b>. По завершению расследование передайте результат с помощью метода <b>PATCH /police/api/report</b>. Желаем удачи! 
+            </p>
+        </div>
+
+        <h3 class="display-7 fw-bold">С чего начать</h3>
+        <div class="col-lg-8 mx-auto text-start">
+            <p class="lead">
+                Как получить доступ к документации на <b>Web API</b> описано в <b>Установка и начало работы</b>.
+            </p>
+
+            <p class="lead">
+                Так же 30 октября 2025 вам передали ключи для доступа к API местного финтнес центра и социальной сети <b>Cakebook</b> и ваш
+                id пользователя:
+            </p>
+            <pre class="mx-0 text-start">
+                <code> 
+                    GETFITNOW_API_TOKEN = 'd901050d-07ec-4990-a05c-ab2178e2e09c'
+                    CAKEBOOK_API_TOKEN = 'd901050d-07ec-4990-a05c-ab2178e2e09c'
+                    PERSON_ID = 12345
+                </code>
+            </pre>
+
+            <p class="lead">
+                Используя токен от <b>Cakebook API</b> и зная когда и от кого было сообщение с доступами запросите сообщения. Можете
+                использовать свой любимый инструмент для работы с <b>Web API</b>. Я рекомендую <b>Bruno</b> или <b>REST Client Extension</b> для VS
+                Code. Например для REST Client запрос будет таким:
+            </p>
+
+            <pre class="mx-0 text-start">
+                <code> 
+                    POST http://localhost:8080/cakebook/api/events HTTP/1.1
+                    Content-Type: application/json
+                    Authorization: Bearer d901050d-07ec-4990-a05c-ab2178e2e09c
+                    
+                    {
+                        "person_id": 12345,
+                        "start_date": 20251030,
+                        "end_date": 20251030
+                    }
+                </code>
+            </pre>
+
+            <p class="lead">
+                В ответ вы получите JSON, содержащий текст сообщения с доступами к служебному API (police/api/). Далее с помощью
+                служебного API и зная дату совершения преступления получите отчет о преступлении и приступайте к расследованию.
+            </p>
+        </div>
+
+        <h3 class="display-7 fw-bold">Как проверить результат расследования</h3>
+        
+        <div class="col-lg-8 mx-auto text-start">
+            <p class="lead">
+                Воспользуйтесь методом PATCH /police/api/report. Например для REST Client так:
+            </p>
+
+            <pre class="mx-0 text-start">
+                <code> 
+                    PATCH http://localhost:8080/police/api/report HTTP/1.1
+                    Content-Type: application/json
+                    Authorization: Bearer d901050d
+                    {
+                        "suspect_id": 12345,
+                        "suspect_name": "Api Fox",
+                        "report_id": 12346
+                    }
+                </code>
+            </pre>
+        </div>     
+
+    </div>
+
+    <div class="py-5 my-5 text-center">
+        <h2 class="display-6 fw-bold">В будущих обновлениях (Дорожная карта)</h2>
+
+        <div class="col-lg-8 mx-auto text-start">
+            <p class="lead">1. Новые части</p>
+            <p class="lead">2. Больше детектива</p>
+            <p class="lead">3. Сюжетный режим</p>
+            <p class="lead">4. Загадки решаемые при помощи RPC и GraphQL</p>
+            <p class="lead">5. Загадки решаемые при помощи Web UI</p>
+        </div>
+    </div>
+
+    <div class="py-5 my-5 text-center">
+        <h2 class="display-6 fw-bold">Copyright</h2>
+
+        <div class="col-lg-8 mx-auto text-start">
+            <p class="lead mb-2">
+                Данный проект распространяется под лицензией <b>MIT</b> @SnoweTiger 2024.</br>
+                За основу данных проекта взята SQL база из <a href="https://mystery.knightlab.com/">The SQL Murder
+                    Mystery</a>
+                под <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons CC BY-SA 4.0</a>
+            </p>
+        </div>
+
+        
+        
+    </div>
+
+
+
+
+
+    <!-- # 
+    
+    
+    
+    # 
+    
+
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">&copy; 2024 SnoweTiger</span>
+        </div>
+    </footer>
+
+</body>
+
+</html>
