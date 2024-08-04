@@ -10,7 +10,7 @@ from auth.auth_bearer import JWTBearer
 
 TARGET_PERSON_ID = 64562
 
-router = APIRouter(tags=["База полиция"], dependencies=[Depends(JWTBearer())])
+router = APIRouter(tags=["Служебное API"], dependencies=[Depends(JWTBearer())])
 
 
 @router.get("/report/{date}", response_model=list[ReportSchema],

@@ -15,10 +15,8 @@
 
 <style>
     .img-title {
-
-  max-width: 100%;
-  height: auto;
-
+        max-width: 100%;
+        height: auto;
     }
 </style>
 
@@ -31,7 +29,7 @@
     </ul>
 
     <div class="py-0 mt-3 text-center">
-        <div class="col-lg-8 mx-auto text-start">
+        <div class="col-lg-8 mx-auto text-center">
             <img src="./art/title-main.png" class="img-title" alt="The API Mystery"
             >
         </div>
@@ -74,6 +72,12 @@
                 Данная игра направлена на развитие ваших навыков работы с <b>Web API</b> и требует активного использования вашей смекалки и
                 дедукции. Будьте готовы к вызовам и наслаждайтесь процессом разгадывания загадок и поиска преступников!
             </p>
+
+            <p class="lead mt-3">
+                Все персонажи и события являются вымышленными, и любое совпадение с реально живущими или жившими людьми и событиями
+                случайно.
+            </p>
+
         </div>
     </div>
 
@@ -86,47 +90,80 @@
                 установке по ссылке <a href="https://docs.docker.com/desktop/install/windows-install/">Docker Desktop</a>. После установки Docker, выполните следующие шаги:
             </p>
 
-            <ol class="lead">
-                <li>Создайте новую папку на вашем компьютере.</li>
-                <li>Перейдите в созданную папку.</li>
-                <li>Скачайте файл <b>docker-compose.yml</b> из этого репозитория в папку.
-                
-                </li>
-                <li>Запустите контейнер с помощью команды <b>docker-compose up -d</b></li>
-            </ol>
+        </div>
 
+        <div class="col-lg-8 mx-auto mt-5 text-start">
             <p class="lead">
-                Сервер будет доступен по адресу <a href="http://localhost:8080">http://localhost:8080</a>. 
-                Чтобы проверить доступность сервера, вы можете ввести в браузере <a href="http://localhost:8080/ping">http://localhost:8080/ping</a> 
+                1. Создайте новую папку на вашем компьютере.
+            </p>
+            
+            <p class="lead">
+                2. Перейдите в созданную папку.
+            </p>
+            
+            <p class="lead">
+                3. Откройте консоль в созданной папке.
+            </p>
+            
+            <p class="lead">
+                4. Скачайте файл <b>docker-compose.yml</b> из репозитория проекта в папку.
+                <a href="./docker-compose.yml">Прямая ссылка</a> сохранить как docker-compose.yml
                 или выполнив в консоли:
             </p>
-
-            <pre class="mx-0 my-0 text-start">
-                <code> 
-                    curl http://localhost:8080/ping
-                </code> 
-            </pre>
-
-            <p class="lead">Сервер ответит:</p>
             
             <pre class="mx-0 my-0 text-start">
                 <code> 
-                    StatusCode : 200
-                    StatusDescription : OK
-                    Content : {"message":"pong"}
-                </code>
+                    wget wget https://raw.githubusercontent.com/SnoweTiger/APIMystery/master/docker-compose.yml -O docker-compose.yml
+                </code> 
             </pre>
+            
+            <p class="lead">
+                5. Запустите контейнер с помощью консольной команды <b>docker-compose up -d</b>
+            </p>
 
-            <p class="lead">Документация к Web API будет доступна по адресу <a href="http://localhost:8080/docs">http://localhost:8080/docs</a></p>
-
-            <p class="lead">Остановить и удалить контейнер можно следующей командой</p>
-
-            <pre class="mx-0 my-0 text-start">
-                <code> 
-                    docker-compose down
-                </code>
-            </pre>
         </div>
+
+        <div class="col-lg-8 mx-auto mt-5 text-start">
+            <p class="lead">
+                Сервер будет доступен по адресу <b>http://localhost:8080</b>.
+                Чтобы проверить доступность сервера, вы можете ввести в браузере <a
+                    href="http://localhost:8080/ping">http://localhost:8080/ping</a>
+                или выполнив в консоли:
+            </p>
+            
+            <pre class="mx-0 my-0 text-start">
+                            <code> 
+                                curl http://localhost:8080/ping
+                            </code> 
+                        </pre>
+            
+            <p class="lead">Сервер ответит:</p>
+            
+            <pre class="mx-0 my-0 text-start">
+                            <code> 
+                                StatusCode : 200
+                                StatusDescription : OK
+                                Content : {"message":"pong"}
+                            </code>
+                        </pre>
+            
+            <p class="lead">Документация к Web API будет доступна по адресу <a
+                    href="http://localhost:8080/docs">http://localhost:8080/docs</a></p>
+            
+            <p class="lead">Остановить и удалить контейнер можно следующей командой</p>
+            
+            <pre class="mx-0 my-0 text-start">
+                            <code> 
+                                docker-compose down
+                            </code>
+                        </pre>
+
+        </div>
+
+            
+
+            
+        
     </div>
 
     <div class="py-3 mt-3 text-center">
@@ -200,8 +237,40 @@
 
             <p class="lead">
                 Далее с помощью служебного API и зная дату совершения преступления получите отчет о преступлении и приступайте к
-                расследованию, метод <b>POST /police/api/report</b>.
+                расследованию. Для этого сначала авторизуйтесь в служебном API и получите токен с помощью метода <b>POST /police/auth/login</b>.
+                Затем с помощью метода <b>POST /police/api/report/search</b> получите отчет с места преступления.
             </p>
+
+            <p class="lead">
+                Вот пример запросов с использованием расширения REST Client:
+            </p>
+
+            <pre class="mx-0 my-0 text-start">
+                <code> 
+                    ###
+                    # @name login_response
+                    POST http://localhost:8080/police/auth/login HTTP/1.1
+                    Content-Type: application/json
+                    {
+                        "login": "ApiFox",
+                        "password": "Fox2025"
+                    }
+                    
+                    ###
+                    @token = {{login_response.response.body.token}}
+                    
+                    ###
+                    POST http://localhost:8080/police/api/report/search HTTP/1.1
+                    Content-Type: application/json
+                    Authorization: Bearer {{token}}
+                    {
+                        "date_from": 20251029,
+                        "date_to": 20251029,
+                        "type": "theft"
+                    }
+                </code>
+            </pre>
+
         </div>
 
         <h3 class="display-7 fw-bold">Как проверить результат расследования</h3>

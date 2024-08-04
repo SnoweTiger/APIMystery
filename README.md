@@ -14,6 +14,8 @@
 
 Данная игра направлена на развитие ваших навыков работы с **Web API** и требует активного использования вашей смекалки и дедукции. Будьте готовы к вызовам и наслаждайтесь процессом разгадывания загадок и поиска преступников!
 
+Все персонажи и события являются вымышленными, и любое совпадение с реально живущими или жившими людьми и событиями случайно.
+
 ## Установка и начало работы
 
 Самый простой способ использовать предварительно подготовленный контейнер. Для этого, вам необходимо установить **Docker Desktop** или **docker-engine** на ваш компьютер и добавить их в переменную среды **path**. Вы можете найти инструкции по установке по ссылке [Docker Desktop](https://docs.docker.com/desktop/).
@@ -21,10 +23,10 @@
 
 1. Создайте новую папку на вашем компьютере.
 2. Перейдите в созданную папку.
-3. Скачайте файл **docker-compose.yml** из этого репозитория.
+3. Скачайте файл **docker-compose.yml** из этого репозитория. [docker-compose.yml](docker-compose.yml)
 
 ```
-wget https://github.com/SnoweTiger/APIMystery/blob/master/docker-compose.yml -O docker-compose.yml
+wget wget  https://raw.githubusercontent.com/SnoweTiger/APIMystery/master/docker-compose.yml -O docker-compose.yml
 ```
 
 4. Запустите контейнер с помощью команды **docker-compose up -d**
@@ -92,6 +94,38 @@ Authorization: Bearer d901050d-07ec-4990-a05c-ab2178e2e09c
 В ответ вы получите JSON, содержащий сообщения от техподдержки с доступами к служебному API (police/api/).
 
 Далее с помощью служебного API и зная дату совершения преступления получите отчет о преступлении и приступайте к расследованию, метод **POST /police/api/report**.
+
+Далее с помощью служебного API и зная дату совершения преступления получите отчет о преступлении и приступайте к расследованию. Для этого сначала авторизуйтесь в служебном API и получите токен с помощью метода **POST /police/auth/login**. Затем с помощью метода **POST /police/api/report/search** получите отчет с места преступления.
+
+Вот пример запросов с использованием расширения REST Client:
+
+```
+###
+# @name login_response
+POST http://localhost:8080/police/auth/login HTTP/1.1
+Content-Type: application/json
+{
+    "login": "ApiFox",
+    "password": "Fox2025"
+}
+
+###
+@token = {{login_response.response.body.token}}
+
+###
+POST http://localhost:8080/police/api/report/search HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+{
+    "date_from": 20251029,
+    "date_to": 20251029,
+    "type": "theft"
+}
+```
+
+Из отчета мы узнаем что произошло и ФИО потерпевшего и о том что он был приглашен на **допрос(interview)**
+
+Далее чуть хитрее. Что бы получить **допрос(interview)** персонажа надо знать его **id** или id персонажа **person_id**. Но мы знаем как зовут потерпевшего и можем узнать его **person_id** с помощь еще одного метода нашего API.
 
 ### Как проверить результат расследования
 
