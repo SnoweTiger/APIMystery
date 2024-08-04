@@ -160,3 +160,5 @@ Authorization: Bearer YOUR_TOKEN
 Данный проект распространяется под лицензией [MIT](/LICENSE) @SnoweTiger 2024.
 За основу данных проекта взята SQL база из [The Sql Murder Mystery](https://mystery.knightlab.com/)
 под [Creative Commons CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+Изображения проекта распространяется под лицензией [MIT](/LICENSE) @SnoweTiger 2024.
+Они созданы с помощью модели ReV Animated (SD 1.5) под [Creative Commons CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
